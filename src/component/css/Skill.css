@@ -1,0 +1,44 @@
+.skill-container {
+    
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    border-radius: 10px;
+  }
+  
+  .skill-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(90deg, #ff0077, #0077ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .skill-description {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+  }
+  
+  .skills-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .skill-icon {
+    font-size: 3rem;
+    transition: transform 0.3s, color 0.3s;
+    color: #ffffff; /* Default white */
+  }
+  
+  .skill-icon:hover {
+    transform: scale(1.2);
+    color: #0077ff; /* Highlight color */
+    cursor: pointer;
+  }
+  

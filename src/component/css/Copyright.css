@@ -1,0 +1,13 @@
+/* Copyright component styling */
+.copyright {
+    text-align: center;
+    padding: 20px;
+    color: #ffffff; /* White text */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-top: 1px solid #333; /* Optional: Add a border at the top */
+  }
+  
+  .copyright p {
+    margin: 0; /* Remove default margin */
+  }

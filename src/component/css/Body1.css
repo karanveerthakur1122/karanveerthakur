@@ -1,0 +1,35 @@
+.body1-container{
+    display: flex;
+    margin: 4%;
+    justify-content: space-around;
+    align-items: center;
+}
+.gradient-text-shadow {  
+    font-size: 4rem;    
+    background: linear-gradient(90deg, #ec44ac, #921b1b);  
+    -webkit-background-clip: text;  
+    -webkit-text-fill-color: transparent;  
+    color: transparent;  
+    background-clip: text;  
+
+}
+.profilePic img{
+    width: 100%;
+}
+.description{
+    overflow: hidden;
+}
+/* .DownloadBtn :hover{
+    background-color: #390303;
+    box-shadow: 2px 2px 10px 4px rgb(173, 0, 0);
+}
+.DownloadBtn button{
+    margin: 2%;
+    padding: 3%;
+    text-decoration: none;
+    border-color: #921b1b;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px 4px rgb(109, 107, 107);
+    
+} */
+

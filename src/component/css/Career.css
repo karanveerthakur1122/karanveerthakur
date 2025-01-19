@@ -1,0 +1,127 @@
+/* Overall container for the timeline */
+.career-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(20, 20, 20);
+    color: aliceblue;
+}
+
+/* Timeline structure */
+.timeline {
+    position: relative;
+    width: 200px;
+    height: 80%;
+}
+
+/* Vertical line in the timeline */
+.main-line {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #000000; /* Black line */
+    z-index: 1;
+}
+
+/* Lightning animation: falling bulb effect */
+.lightning {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: falling-lightning 2s linear infinite;
+    z-index: 2;
+}
+
+/* Falling bulb animation */
+@keyframes falling-lightning {
+    0% {
+        top: 0;
+        opacity: 1;
+    }
+    90% {
+        top: 100%;
+        opacity: 0.5;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+/* Events on the timeline */
+.event {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    text-align: center; /* Center align text */
+    font-size: 16px;
+    color: #fff;
+    z-index: 3;
+    width: 150px; /* Fixed width for better alignment */
+}
+
+/* Horizontal connecting lines for events */
+.event::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 50px; /* Length of the connecting line */
+    height: 2px; /* Thickness of the connecting line */
+    background-color: #ff0000; /* White connecting line */
+}
+
+/* Position the connecting lines for each event */
+.event-1::before {
+    left: 100%; /* Line extends to the right */
+}
+
+.event-2::before {
+    right: 100%; /* Line extends to the left */
+}
+
+.event-3::before {
+    left: 100%; /* Line extends to the right */
+}
+
+/* Specific positions for each event */
+.event-1 {
+    top: 10%;
+    left: -100px; /* Position to the left of the line */
+}
+
+.event-2 {
+    top: 40%;
+    left: 150px; /* Position to the right of the line */
+    
+}
+
+.event-3 {
+    top: 70%;
+    left: -100px; /* Position to the left of the line */
+}
+
+/* Additional styling for events */
+.event span {
+    margin: 2px 0;
+    color: rgb(239, 39, 13);
+}
+
+.event h1 {
+    font-size: 18px;
+    color: #ffffff;
+    margin-top: 5px;
+}
+
+/* Title styling */
+.title {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}

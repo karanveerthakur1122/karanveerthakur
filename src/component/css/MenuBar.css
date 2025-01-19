@@ -1,0 +1,85 @@
+.menu {  
+    display: flex;  
+    justify-content: space-between; /* Use space-between to handle layout */  
+    align-items: center;  
+    margin: 4%;  
+    padding: 2%;  
+    border: 2px solid rgb(120, 117, 117);  
+    border-radius: 30px;  
+    box-shadow: 3px 1px 8px 2px rgb(8, 76, 145);  
+    position: relative; /* Relative positioning for absolute children */  
+}  
+
+.logo {  
+    margin: 0;  
+    padding: 0;  
+}  
+
+.logo img {  
+    width: 100px;  
+}  
+
+.menuOptions {  
+    display: flex; /* Flex display for horizontal layout */  
+    gap: 10px; /* Gap between menu items */  
+    position: absolute; /* Position options absolutely */  
+    top: 100%; /* Position below the menu */  
+    right: 0; /* Align options to the right */    
+    border-radius: 10px; /* Rounded corners */  
+    visibility: hidden; /* Prevent interaction when hidden */  
+    opacity: 0; /* Initially hidden */  
+    transition: visibility 0s, opacity 0.3s ease-in-out; /* Smooth transition */  
+}  
+
+.menuOptions.open {  
+    opacity: 1; /* Fully visible when open */  
+    visibility: visible; /* Allow interaction */  
+    flex-direction: column; /* Stack items vertically */  
+    padding: 10px; /* Add some padding */  
+    z-index: 1000; /* Ensure options appear above other elements */  
+}  
+
+.menuOptions a {  
+    text-decoration: none;  
+    color: rgb(255, 255, 255); /* Text color */  
+    padding: 5px 10px; /* Padding for touches */  
+    border-radius: 5px; /* Rounded corners for links */  
+}  
+
+.menuOptions a:hover {  
+    background-color: rgb(48, 1, 1); /* Light background on hover */  
+    border-radius: 50px;
+}  
+
+/* Desktop Styles */  
+@media (min-width: 769px) {  
+    .menuOptions {  
+        display: flex;  /* Show options in a row */  
+        flex-direction: row;  /* Stack items in a row */  
+        position: relative;  /* Change position for desktop display */  
+        visibility: visible;  /* Always visible in desktop */  
+        opacity: 1; /* Always visible in desktop */  
+        top: auto; /* Reset top placement */  
+        right: auto; /* Reset right alignment */  
+        padding: 0; /* No padding since it's displayed in-line */  
+    }  
+    
+    .menuOptions a {  
+        padding: 10px 15px; /* Increased padding for desktop view */  
+    }  
+}  
+
+/* Mobile Styles */  
+.menu-icon {  
+    display: none; /* Hide the menu icon by default */  
+    cursor: pointer; /* Change cursor to pointer */  
+}  
+
+@media (max-width: 768px) {  
+    .menuOptions{
+        background-color: rgb(33, 5, 5);
+    }
+    .menu-icon {  
+        display: block; /* Show the menu icon on smaller screens */  
+    }  
+}
