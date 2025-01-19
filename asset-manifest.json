@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/karanveerthakur/static/css/main.001d849a.css",
+    "main.js": "/karanveerthakur/static/js/main.1ba41d74.js",
+    "static/js/156.38bd348e.chunk.js": "/karanveerthakur/static/js/156.38bd348e.chunk.js",
+    "static/media/logo.png": "/karanveerthakur/static/media/logo.a3232f8095bdfadb2553.png",
+    "static/media/resume.pdf": "/karanveerthakur/static/media/resume.d08d32ec3fca86c7185c.pdf",
+    "static/media/profile.png": "/karanveerthakur/static/media/profile.3fa7cbc9f2c357a3a1f1.png",
+    "index.html": "/karanveerthakur/index.html",
+    "main.001d849a.css.map": "/karanveerthakur/static/css/main.001d849a.css.map",
+    "main.1ba41d74.js.map": "/karanveerthakur/static/js/main.1ba41d74.js.map",
+    "156.38bd348e.chunk.js.map": "/karanveerthakur/static/js/156.38bd348e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.001d849a.css",
+    "static/js/main.1ba41d74.js"
+  ]
+}
