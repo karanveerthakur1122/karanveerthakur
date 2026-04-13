@@ -1,33 +1,27 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import '../css/ProjectBanner.css';
 
-const ProjectBanner = ({ title, category, technologies }) => {
-  // Generate a unique background pattern based on the project title
-  const generatePattern = (title) => {
+const ProjectBanner = React.memo(({ title, category, technologies }) => {
+  const { pattern, displayTechs } = useMemo(() => {
     const hash = title.split('').reduce((acc, char) => {
       return char.charCodeAt(0) + ((acc << 5) - acc);
     }, 0);
-    
+
     const primaryHue = Math.abs(hash % 360);
     const secondaryHue = (primaryHue + 180) % 360;
-    
-    return {
-      primaryColor: `hsl(${primaryHue}, 70%, 65%)`,
-      secondaryColor: `hsl(${secondaryHue}, 70%, 65%)`,
-      pattern: hash % 5  // 5 different pattern types
-    };
-  };
 
-  const pattern = generatePattern(title);
-  
-  // Get 2 random technologies to display as animated elements
-  const getRandomTechs = (techs) => {
-    if (!techs || techs.length <= 2) return techs || [];
-    const shuffled = [...techs].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 2);
-  };
-  
-  const randomTechs = getRandomTechs(technologies);
+    const techs = technologies || [];
+    const picked = techs.length <= 2 ? techs : techs.slice(0, 2);
+
+    return {
+      pattern: {
+        primaryColor: `hsl(${primaryHue}, 70%, 65%)`,
+        secondaryColor: `hsl(${secondaryHue}, 70%, 65%)`,
+        pattern: hash % 5
+      },
+      displayTechs: picked
+    };
+  }, [title, technologies]);
   
   // Get appropriate icon for category
   const getCategoryIcon = (cat) => {
@@ -58,7 +52,7 @@ const ProjectBanner = ({ title, category, technologies }) => {
         </div>
         
         <div className="banner-floating-techs">
-          {randomTechs.map((tech, index) => (
+          {displayTechs.map((tech, index) => (
             <div 
               key={index}
               className={`floating-tech ft-${index + 1}`}
@@ -71,6 +65,6 @@ const ProjectBanner = ({ title, category, technologies }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ProjectBanner;

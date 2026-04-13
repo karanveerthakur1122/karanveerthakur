@@ -1,4 +1,6 @@
-/* App.css */
+/* ============================================
+   GLOBAL – Liquid Glass Theme Foundation
+   ============================================ */
 
 * {
   box-sizing: border-box;
@@ -7,38 +9,53 @@
 }
 
 :root {
+  --accent: #007bff;
+  --accent-light: rgba(0, 123, 255, 0.1);
+  --accent-medium: rgba(0, 123, 255, 0.18);
+  --accent-dark: #0056b3;
+  --glass-light-bg: rgba(255, 255, 255, 0.45);
+  --glass-light-border: rgba(255, 255, 255, 0.4);
+  --glass-dark-bg: rgba(30, 30, 42, 0.45);
+  --glass-dark-border: rgba(255, 255, 255, 0.07);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius: 18px;
+  /* keep old var names for backward compat */
   --accent-color: #007bff;
   --accent-color-light: rgba(0, 123, 255, 0.1);
   --accent-color-medium: rgba(0, 123, 255, 0.2);
   --accent-color-dark: #0056b3;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s var(--ease-spring), color 0.4s var(--ease-spring);
 }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s var(--ease-spring), color 0.4s var(--ease-spring);
 }
 
-/* Theme Styles */
+/* ── Themes ── */
 body.light-theme,
 .App.light-theme {
-  background-color: #ffffff;
-  color: #333333;
+  background-color: #f8f9fc;
+  color: #1a1a2e;
 }
 
 body.dark-theme,
 .App.dark-theme {
-  background-color: #121212;
-  color: #f0f0f0;
+  background-color: #0e0e14;
+  color: #e8e8f0;
 }
 
 .dark-theme {
@@ -46,34 +63,33 @@ body.dark-theme,
   --accent-color-medium: rgba(0, 123, 255, 0.25);
 }
 
+/* ── Main Content ── */
 .main-content {
-  margin-top: 80px; /* Space for fixed header */
+  margin-top: 0;
   flex: 1;
-  padding: 20px;
-  max-width: 1200px;
+  padding: 0 0 100px;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.page-container {
-  padding: 40px 0;
-  min-height: calc(100vh - 160px); /* Account for header and some padding */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+.page {
+  animation: pageIn 0.5s var(--ease-spring);
 }
 
-/* Common Section Title Styles */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared Section Title ── */
 .section-title {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
   position: relative;
   display: inline-block;
-  padding-bottom: 15px;
-  color: var(--accent-color);
+  padding-bottom: 14px;
+  color: var(--accent);
+  letter-spacing: -0.3px;
 }
 
 .section-title::after {
@@ -82,123 +98,168 @@ body.dark-theme,
   left: 0;
   right: 0;
   bottom: 0;
-  width: 60px;
+  width: 50px;
   height: 3px;
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent), rgba(0, 123, 255, 0.3));
   margin: 0 auto;
-}
-
-.dark-theme .section-title {
-  color: var(--accent-color);
+  border-radius: 2px;
 }
 
 .section-description {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto 40px;
-  color: #666;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
 }
 
-.dark-theme .section-description {
-  color: #aaa;
+.light-theme .section-description { color: #5a5a70; }
+.dark-theme .section-description { color: #9a9ab0; }
+
+/* ── Liquid Glass Card Mixin (reusable via class) ── */
+.glass-card {
+  border-radius: var(--radius);
+  transition:
+    transform 0.25s var(--ease-spring),
+    box-shadow 0.25s ease;
 }
 
-/* Page Transitions */
-.page {
-  animation: fadeIn 0.5s ease-in-out;
+.light-theme .glass-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.55), rgba(245,248,255,0.35));
+  border: 1px solid var(--glass-light-border);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 4px 20px rgba(0,0,0,0.05);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.dark-theme .glass-card {
+  background: linear-gradient(145deg, rgba(40,40,58,0.5), rgba(28,28,40,0.35));
+  border: 1px solid var(--glass-dark-border);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.04) inset,
+    0 4px 20px rgba(0,0,0,0.2);
 }
 
-/* Button and Link Animations */
-.btn {
+.glass-card:hover {
+  transform: translateY(-6px);
+}
+
+.light-theme .glass-card:hover {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 12px 36px rgba(0,0,0,0.08);
+}
+
+.dark-theme .glass-card:hover {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 12px 36px rgba(0,0,0,0.3);
+}
+
+/* ── Liquid Glass Button ── */
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.btn::before {
+.glass-btn:hover {
+  transform: translateY(-2px);
+}
+
+.glass-btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.25);
+}
+
+.glass-btn-primary:hover {
+  box-shadow: 0 8px 28px rgba(0, 123, 255, 0.35);
+}
+
+.glass-btn-secondary {
+  color: var(--accent);
+}
+
+.light-theme .glass-btn-secondary {
+  background: rgba(0, 123, 255, 0.08);
+  border: 1px solid rgba(0, 123, 255, 0.18);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
+}
+
+.dark-theme .glass-btn-secondary {
+  background: rgba(130, 177, 255, 0.08);
+  border: 1px solid rgba(130, 177, 255, 0.12);
+  color: #82b1ff;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset;
+}
+
+.light-theme .glass-btn-secondary:hover {
+  background: rgba(0, 123, 255, 0.14);
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.1);
+}
+
+.dark-theme .glass-btn-secondary:hover {
+  background: rgba(130, 177, 255, 0.14);
+  box-shadow: 0 4px 16px rgba(130, 177, 255, 0.08);
+}
+
+/* Shine sweep on buttons */
+.glass-btn::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
+  left: -80%;
+  width: 60%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.45s ease;
 }
 
-.btn:hover::before {
-  left: 0;
+.glass-btn:hover::before {
+  left: 130%;
 }
 
-.btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.dark-theme .btn:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Card Hover Effects */
-.project-card, .service-card {
-  transition: all 0.3s ease;
-}
-
-.project-card:hover, .service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-.dark-theme .project-card:hover, .dark-theme .service-card:hover {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Link Hover Animation */
-a:not(.btn) {
+/* ── Link animations (exclude dock) ── */
+a:not(.btn):not(.dock-item):not(.glass-btn):not(.view-all-link):not(.social-link):not(.footer-nav a):not(.contact-link) {
   position: relative;
-  transition: all 0.3s ease;
+  transition: color 0.25s ease;
 }
 
-a:not(.btn)::after {
+a:not(.btn):not(.dock-item):not(.glass-btn):not(.view-all-link):not(.social-link):not(.footer-nav a):not(.contact-link)::after {
   content: '';
   position: absolute;
   width: 0;
-  height: 2px;
+  height: 1.5px;
   bottom: -2px;
   left: 0;
-  background-color: var(--accent-color);
-  transition: width 0.3s ease;
+  background: var(--accent);
+  transition: width 0.25s var(--ease-spring);
+  border-radius: 1px;
 }
 
-a:not(.btn):hover::after {
+a:not(.btn):not(.dock-item):not(.glass-btn):not(.view-all-link):not(.social-link):not(.footer-nav a):not(.contact-link):hover::after {
   width: 100%;
 }
 
-/* Icon Hover Animation */
-.social-icon {
-  transition: all 0.3s ease;
-}
-
-.social-icon:hover {
-  transform: translateY(-3px) scale(1.1);
-}
-
-/* Responsive Design */
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .main-content {
-    padding: 15px;
+    padding: 0 0 90px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
   }
 }

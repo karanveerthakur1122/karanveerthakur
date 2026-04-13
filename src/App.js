@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 import Header from './component/Header';
 import Footer from './component/Footer';
 import ScrollToTop from './component/ScrollToTop';
@@ -39,25 +37,15 @@ function AnimatedRoutes({ isDarkMode, toggleTheme }) {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // Initialize AOS on component mount
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: false,
-      mirror: true,
-    });
-  }, []);
-
-  // Check for user's preferred theme on initial load
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark') {
-      setIsDarkMode(true);
-      document.body.classList.add('dark-theme');
-    } else {
+    if (storedTheme === 'light') {
+      setIsDarkMode(false);
       document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.add('dark-theme');
     }
   }, []);
 

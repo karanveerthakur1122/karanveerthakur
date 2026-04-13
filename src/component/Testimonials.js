@@ -1,9 +1,10 @@
 import React from 'react';
-import { FaQuoteLeft, FaStar } from 'react-icons/fa';
+import { FaQuoteLeft, FaStar, FaExternalLinkAlt } from 'react-icons/fa';
 import '../css/Testimonials.css';
 
 const Testimonials = () => {
-  const clients = [    {
+  const clients = [
+    {
       id: 1,
       name: 'MIT Campus',
       website: 'mitjnk.edu.np',
@@ -27,35 +28,62 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="testimonials-section">
-      <div className="testimonials-container">
-        <h2 className="section-title" data-aos="fade-up">What My Clients Say</h2>
-        
-        <div className="testimonials-grid">
+    <section className="clients-section">
+      <div className="clients-bg-orb clients-orb-1" />
+      <div className="clients-bg-orb clients-orb-2" />
+
+      <div className="clients-glass-panel">
+        <div className="clients-panel-shine" />
+        <div className="clients-panel-edge" />
+
+        <div className="clients-header">
+          <span className="clients-tag">TESTIMONIALS</span>
+          <h2 className="clients-heading">What My Clients Say</h2>
+          <p className="clients-subtitle">
+            Trusted by organizations to deliver exceptional web experiences.
+          </p>
+        </div>
+
+        <div className="clients-grid">
           {clients.map((client) => (
-            <div className="testimonial-card" key={client.id} data-aos="fade-up" data-aos-delay={client.id * 100}>
-              <div className="testimonial-content">
-                <FaQuoteLeft className="quote-icon" />
-                <p className="testimonial-text">{client.description}</p>
-                
-                <div className="rating">
+            <div className="client-card" key={client.id}>
+              <div className="client-card-accent" />
+              <div className="client-card-glare" />
+
+              <div className="client-card-body">
+                <FaQuoteLeft className="client-quote-icon" />
+                <p className="client-text">{client.description}</p>
+
+                <div className="client-stars">
                   {[...Array(client.rating)].map((_, i) => (
-                    <FaStar key={i} className="star-icon" />
+                    <FaStar key={i} className="client-star" />
                   ))}
                 </div>
               </div>
-              
-              <div className="client-info">
-                <h3 className="client-name">{client.name}</h3>
-                <a href={`https://${client.website}`} target="_blank" rel="noopener noreferrer" className="client-website">
-                  {client.website}
-                </a>
+
+              <div className="client-card-footer">
+                <div className="client-identity">
+                  <div className="client-avatar">
+                    {client.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="client-card-name">{client.name}</h3>
+                    <a
+                      href={`https://${client.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="client-link"
+                    >
+                      {client.website} <FaExternalLinkAlt />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

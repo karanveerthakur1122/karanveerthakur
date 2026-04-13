@@ -7,8 +7,10 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Portfolio website of Karan Veer Thakur - B.Tech Computer Science and Engineering Student"
+      content="Karan Veer Thakur – Full Stack Developer & ML Researcher. B.Tech CSE graduate from KIIT. View projects, skills, and research."
     />
+    <meta name="author" content="Karan Veer Thakur" />
+    <meta name="keywords" content="Karan Veer Thakur, portfolio, full stack developer, machine learning, React, KIIT, IEEE" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -27,6 +29,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Karan Veer Thakur - Portfolio</title>
+    <!-- GitHub Pages SPA redirect handler -->
+    <script>
+      (function(l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -1,87 +1,104 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom';
+import { FaTimes, FaExternalLinkAlt, FaExpand } from 'react-icons/fa';
 import '../css/LivePreview.css';
 
 const LivePreview = ({ title, url }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
-    // Prevent scrolling when expanded
-    if (isExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    if (!isOpen) return;
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('keydown', onKey);
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = prev || '';
+      window.removeEventListener('keydown', onKey);
     };
-  }, [isExpanded]);
+  }, [isOpen, close]);
 
-  const handleLoad = () => {
-    setIsLoading(false);
-  };
+  const handleLoad = () => setIsLoading(false);
 
-  const handleError = () => {
-    // Retry loading a few times in case of temporary network issues
-    if (retryCount < 3) {
-      setRetryCount(retryCount + 1);
-      setIsLoading(true);
-    }
-  };
+  const modal = isOpen
+    ? ReactDOM.createPortal(
+        <div className="lp-overlay" onClick={close}>
+          <div className="lp-dialog" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="lp-header">
+              <h3 className="lp-title">{title}</h3>
+              <div className="lp-controls">
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lp-ctrl-btn"
+                  title="Open in new tab"
+                >
+                  <FaExternalLinkAlt />
+                </a>
+                <button className="lp-ctrl-btn lp-close-btn" onClick={close} title="Close">
+                  <FaTimes />
+                </button>
+              </div>
+            </div>
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+            {/* Iframe */}
+            <div className="lp-body">
+              {isLoading && <div className="lp-spinner" />}
+              <iframe
+                src={url}
+                title={title}
+                className={`lp-iframe ${isLoading ? 'loading' : 'loaded'}`}
+                onLoad={handleLoad}
+                sandbox="allow-scripts allow-same-origin allow-forms"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="lp-footer">
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="lp-visit-btn"
+              >
+                Visit Live Site <FaExternalLinkAlt size={11} />
+              </a>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )
+    : null;
+
   return (
     <>
-      {isExpanded && (
-        <div className="overlay" onClick={toggleExpand}>
-          <button className="close-overlay-btn" onClick={toggleExpand}>
-            <i className="fas fa-times"></i>
+      {/* Inline preview (small) */}
+      <div className="lp-inline">
+        <div className="lp-inline-header">
+          <h3>{title}</h3>
+          <button className="lp-expand-btn" onClick={open} title="Open fullscreen preview">
+            <FaExpand />
           </button>
         </div>
-      )}
-      <div className={`live-preview-container ${isExpanded ? 'expanded' : ''}`}>
-        <div className="preview-header">
-          <h3>{title}</h3>
-          <div className="preview-controls">
-            <a href={url} target="_blank" rel="noopener noreferrer" className="open-btn">
-              <i className="fas fa-external-link-alt"></i>
-            </a>
-            <button className="expand-btn" onClick={toggleExpand}>
-              {isExpanded ? (
-                <i className="fas fa-compress-alt"></i>
-              ) : (
-                <i className="fas fa-expand-alt"></i>
-              )}
-            </button>
-          </div>
-        </div>
-
-        <div className="iframe-container">
-          {isLoading && <div className="loading-spinner"></div>}
+        <div className="lp-inline-frame">
           <iframe
             src={url}
             title={title}
-            className={`preview-iframe ${isLoading ? 'loading' : 'loaded'}`}
-            onLoad={handleLoad}
-            onError={handleError}
             sandbox="allow-scripts allow-same-origin allow-forms"
-          ></iframe>
+          />
         </div>
+      </div>
 
-        <div className="preview-footer">
-          <a 
-            href={url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="visit-site-btn"
-          >
-            Visit Live Site
-          </a>
-        </div>      </div>
+      {modal}
     </>
   );
 };

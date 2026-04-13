@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FaDownload } from 'react-icons/fa';
+import { FaDownload, FaArrowRight } from 'react-icons/fa';
 import '../css/Home.css';
-// Import components
 import ToolsGrid from '../component/ToolsGrid';
 import FeaturedProjects from '../component/FeaturedProjects';
 import Testimonials from '../component/Testimonials';
-// Import images
 import pic1 from '../files/pic1.png';
 import pic2 from '../files/pic2.jpg';
 import pic3 from '../files/pic3.jpg';
@@ -14,119 +12,184 @@ import pic3 from '../files/pic3.jpg';
 const Home = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const images = [pic1, pic2, pic3];
+  const slabRef = useRef(null);
 
-  // Auto-rotate images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
     }, 5000);
-    
     return () => clearInterval(interval);
   }, [images.length]);
 
-  // Manual navigation
-  const goToNextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % images.length);
-  };
+  useEffect(() => {
+    const slab = slabRef.current;
+    if (!slab) return;
 
-  const goToPrevImage = () => {
-    setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
-  };  return (
-    <div className="home-container">
-      <div className="slider-container">
-        <div className="slide-content" data-aos="fade-right" data-aos-delay="200">
-          <h1 className="slide-title">
-            <span>Hi, I'm</span>
-            <span className="highlight">Karan Veer Thakur</span>
-          </h1>
-          <h2 className="slide-subtitle">CS Student & Programmer</h2>
-          <p className="slide-description">
-            Passionate B.Tech Computer Science & Engineering student, crafting user-centric experiences with code.
-          </p>
-          <div className="slide-buttons">
-            <Link to="/portfolio" className="btn-primary">View My Work</Link>
-            <Link to="/contact" className="btn-secondary">Contact Me</Link>
-          </div>
-        </div>
-        <div className="slide-image-container" data-aos="fade-left" data-aos-delay="400">
-          <div className="slide-image">
-            <img 
-              src={images[currentImage]} 
-              alt={`Karan Veer Thakur - Portfolio ${currentImage + 1}`} 
-              className="home-image"
-            />
-            <div className="image-overlay"></div>
-            <div className="image-controls">
-              <button className="image-nav prev" onClick={goToPrevImage}>
-                &lt;
-              </button>
-              <button className="image-nav next" onClick={goToNextImage}>
-                &gt;
-              </button>
-            </div>
-            <div className="image-indicators">
-              {images.map((_, index) => (
-                <span 
-                  key={index} 
-                  className={`indicator ${index === currentImage ? 'active' : ''}`}
-                  onClick={() => setCurrentImage(index)}
-                ></span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>      {/* Home About Section */}
-      <div className="home-about-section">
-        <div className="home-about-container">
-          <div className="home-about-image" data-aos="fade-right" data-aos-duration="1000">
-            <div className="profile-ring"></div>
-            <div className="profile-image">
-              <img src={pic2} alt="Karan Veer Thakur" />
-            </div>
-          </div>
-          
-          <div className="home-about-content" data-aos="fade-left" data-aos-duration="1000">            <h2 className="home-section-title">About Me</h2>
-            <h3 className="home-about-subtitle">B.Tech Computer Science Student</h3>
-            
-            <p className="home-about-description">
-              Hi, I’m Karan Veer Thakur, a B.Tech Computer Science and Engineering student with a strong foundation in object-oriented programming and software development.
-              I’m passionate about building efficient, user-focused applications and continuously improving my skills through real-world projects and self-driven learning.
-              My goal is to create technology solutions that enhance user experiences and bridge the gap between innovation and usability.
-              Explore my portfolio to see projects that reflect my commitment to coding excellence and thoughtful design.
+    const onMove = (e) => {
+      const rect = slab.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      slab.style.setProperty('--rx', `${-y * 4}deg`);
+      slab.style.setProperty('--ry', `${x * 4}deg`);
+      slab.style.setProperty('--gx', `${50 + x * 20}%`);
+      slab.style.setProperty('--gy', `${50 + y * 20}%`);
+    };
+
+    const onLeave = () => {
+      slab.style.setProperty('--rx', '0deg');
+      slab.style.setProperty('--ry', '0deg');
+      slab.style.setProperty('--gx', '50%');
+      slab.style.setProperty('--gy', '50%');
+    };
+
+    slab.addEventListener('mousemove', onMove);
+    slab.addEventListener('mouseleave', onLeave);
+    return () => {
+      slab.removeEventListener('mousemove', onMove);
+      slab.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
+  return (
+    <div className="home">
+      {/* ── Hero ── */}
+      <section className="hero">
+        <div className="hero-bg-orb hero-orb-1" />
+        <div className="hero-bg-orb hero-orb-2" />
+        <div className="hero-bg-orb hero-orb-3" />
+
+        <div className="hero-inner">
+          <div className="hero-text">
+            <p className="hero-greeting anim-rise" style={{ '--d': '0s' }}>Hi, I'm</p>
+            <h1 className="hero-name anim-rise" style={{ '--d': '0.1s' }}>Karan Veer Thakur</h1>
+            <h2 className="hero-role anim-rise" style={{ '--d': '0.2s' }}>Full Stack Developer &amp; ML Researcher</h2>
+            <p className="hero-desc anim-rise" style={{ '--d': '0.3s' }}>
+              B.Tech CSE graduate from KIIT, building scalable
+              full-stack apps and applying machine learning research.
             </p>
-              <div className="home-about-info">
-              <div className="home-info-item">
-                <span className="info-label">Name:</span>
-                <span className="info-value">Karan Veer Thakur</span>
+            <div className="hero-buttons anim-rise" style={{ '--d': '0.4s' }}>
+              <Link to="/portfolio" className="glass-btn glass-btn-primary">
+                View My Work <FaArrowRight />
+              </Link>
+              <Link to="/contact" className="glass-btn glass-btn-secondary">
+                Contact Me
+              </Link>
+            </div>
+          </div>
+
+          <div className="hero-frame-area anim-frame">
+            {/* Glass slab base */}
+            <div className="glass-slab" ref={slabRef}>
+              <div className="slab-shine" />
+              <div className="slab-edge-top" />
+              <div className="slab-edge-bottom" />
+
+              {/* Photo frame sitting on the slab */}
+              <div className="frame-mount">
+                <div className="frame-border">
+                  <div className="frame-inner">
+                    {images.map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt={`Karan ${i + 1}`}
+                        className={`frame-photo ${i === currentImage ? 'active' : ''}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="frame-glare" />
+                </div>
+
+                <div className="frame-dots">
+                  {images.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`dot ${i === currentImage ? 'active' : ''}`}
+                      onClick={() => setCurrentImage(i)}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="home-info-item">
-                <span className="info-label">Email:</span>
-                <span className="info-value">karanveerthakur1122@gmail.com</span>
+
+              {/* Slab reflection */}
+              <div className="slab-reflection" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── About Me ── */}
+      <section className="about-section">
+        <div className="about-bg-orb about-orb-1" />
+        <div className="about-bg-orb about-orb-2" />
+
+        <div className="about-glass-panel">
+          <div className="about-panel-shine" />
+          <div className="about-panel-edge" />
+
+          <div className="about-layout">
+            {/* Glass-framed photo */}
+            <div className="about-photo-side">
+              <div className="about-photo-glass">
+                <div className="about-photo-glare" />
+                <img src={pic2} alt="Karan Veer Thakur" />
               </div>
-              <div className="home-info-item">
-                <span className="info-label">Location:</span>
-                <span className="info-value">Bhubneshwar, Odisha</span>
+              <div className="about-photo-label">
+                <span className="label-dot" />
+                Karan Veer Thakur
               </div>
-            </div>              <div className="home-skill-highlights">
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="100">Java</span>
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="200">HTML/CSS</span>
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="300">JavaScript</span>
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="400">React</span>
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="500">DSA</span>
-              <span className="skill-tag" data-aos="zoom-in" data-aos-delay="600">Python</span>
-            </div>              <div className="home-about-buttons">
-              <Link to="/about" className="btn-more-about">More About Me</Link>
-              <a href="/files/resume.pdf" download className="btn-download-resume">
-                <FaDownload className="download-icon" /> Download CV
-              </a>
-            </div></div>
-        </div>      </div>
-      
-      {/* Tools I use section */}
+            </div>
+
+            {/* Content */}
+            <div className="about-content-side">
+              <span className="about-tag">ABOUT ME</span>
+              <h2 className="about-heading">B.Tech CSE Graduate | KIIT University</h2>
+              <p className="about-text">
+                Computer Science graduate with strong fundamentals in OOP,
+                data structures, and machine learning. Experienced in full-stack
+                development and applied ML research, with an IEEE-published paper.
+              </p>
+
+              <div className="about-details">
+                <div className="detail-row">
+                  <span className="detail-key">Name</span>
+                  <span className="detail-val">Karan Veer Thakur</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-key">Email</span>
+                  <span className="detail-val">karanveerthakur1122@gmail.com</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-key">Location</span>
+                  <span className="detail-val">Bhubaneswar, Odisha</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-key">Education</span>
+                  <span className="detail-val">B.Tech CSE, KIIT University</span>
+                </div>
+              </div>
+
+              <div className="about-pills">
+                {['Java', 'React', 'Python', 'Machine Learning', 'SQL', 'Spring Boot', 'DSA'].map((s) => (
+                  <span key={s} className="skill-pill">{s}</span>
+                ))}
+              </div>
+
+              <div className="about-actions">
+                <Link to="/about" className="glass-btn glass-btn-primary">
+                  More About Me <FaArrowRight />
+                </Link>
+                <a href="/files/resume.pdf" download className="glass-btn glass-btn-secondary">
+                  <FaDownload /> Download CV
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <ToolsGrid />
-      
-      {/* Featured Projects section */}      <FeaturedProjects />      
-      {/* Client Testimonials section */}
+      <FeaturedProjects />
       <Testimonials />
     </div>
   );

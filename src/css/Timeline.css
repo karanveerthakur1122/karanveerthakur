@@ -1,212 +1,248 @@
-/* Timeline Component Styles */
-.timeline-section {
-  margin: 80px 0;
-}
+/* ============================================
+   TIMELINE – Liquid Glass
+   ============================================ */
 
-.timeline-title {
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-  color: var(--accent-color);
-  text-align: center;
-  font-weight: 600;
-}
-
-.timeline-container {
+.tl-section {
   position: relative;
-  max-width: 800px;
-  margin: 0 auto;
+  overflow: hidden;
 }
 
-.timeline-container::before {
-  content: '';
+.tl-bg-orb {
   position: absolute;
-  height: 100%;
-  width: 2px;
-  background-color: var(--accent-color-light);
-  left: 50px;
-  top: 0;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
 }
 
-.timeline-item {
+.tl-orb-1 {
+  width: 300px;
+  height: 300px;
+  top: 20%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(0,198,255,0.3), transparent 70%);
+  animation: orbFloat2 16s ease-in-out infinite;
+}
+
+.light-theme .tl-bg-orb { opacity: 0.25; }
+.dark-theme .tl-bg-orb { opacity: 0.12; }
+
+/* Glass panel */
+.tl-glass-panel {
   position: relative;
-  margin-bottom: 50px;
-  padding-left: 80px;
+  padding: 48px 44px;
+  border-radius: 28px;
+  z-index: 1;
 }
 
-.timeline-item:last-child {
+.light-theme .tl-glass-panel {
+  background: linear-gradient(160deg, #ffffff, #f4f6fc);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.dark-theme .tl-glass-panel {
+  background: linear-gradient(160deg, #1e1e2a, #181824);
+  border: 1.5px solid rgba(255,255,255,0.07);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+/* Header */
+.tl-header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.tl-heading {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.light-theme .tl-heading { color: #1a1a2e; }
+.dark-theme .tl-heading { color: #e8e8f0; }
+
+/* Track */
+.tl-track {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: 40px;
+  z-index: 2;
+}
+
+/* Vertical line */
+.tl-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15px;
+  width: 2px;
+  border-radius: 2px;
+}
+
+.light-theme .tl-line {
+  background: linear-gradient(180deg, var(--accent), rgba(0,198,255,0.2));
+}
+
+.dark-theme .tl-line {
+  background: linear-gradient(180deg, rgba(130,177,255,0.4), rgba(130,177,255,0.05));
+}
+
+/* Item */
+.tl-item {
+  position: relative;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.tl-item:last-child {
   margin-bottom: 0;
 }
 
-.timeline-dot {
+/* Marker */
+.tl-marker {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  left: -33px;
+  top: 20px;
+  z-index: 3;
+}
+
+.tl-dot {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background-color: var(--accent-color);
-  left: 41px;
-  transform: translateX(-50%);
-  border: 4px solid #fff;
-  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-  z-index: 2;
+  background: linear-gradient(135deg, var(--accent), #00c6ff);
+  transition: all 0.3s var(--ease-spring);
 }
 
-.dark-theme .timeline-dot {
-  border-color: #2a2a35;
+.light-theme .tl-dot {
+  border: 3px solid #f8f9fc;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
 }
 
-.timeline-date {
+.dark-theme .tl-dot {
+  border: 3px solid #0e0e14;
+  box-shadow: 0 0 0 3px rgba(130,177,255,0.1);
+}
+
+.tl-item:hover .tl-dot {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 5px rgba(0,123,255,0.2), 0 0 12px rgba(0,123,255,0.3);
+}
+
+/* Card */
+.tl-card {
+  position: relative;
+  width: 100%;
+  padding: 22px 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.light-theme .tl-card {
+  background: linear-gradient(150deg, #fff, #f0f4ff);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.dark-theme .tl-card {
+  background: linear-gradient(150deg, #24243a, #1a1a2c);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.tl-card:hover {
+  transform: translateY(-4px);
+}
+
+.light-theme .tl-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+}
+
+.dark-theme .tl-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.tl-card-glare {
   position: absolute;
-  left: -25px; /* Shifted left for more space */
-  top: 3px;
-  width: 90px; /* Increased width for more space */
-  text-align: right;
-  padding-right: 40px; /* Increased padding for more space */
-  color: var(--accent-color);
-  font-weight: bold;
-  font-size: 1rem;
-  line-height: 1;
-  transition: all 0.3s ease;
-  z-index: 3; /* Ensure date appears above dot animation */
-  background-color: transparent; /* Allow text to be visible through animation */
-  /* Add text shadow for better readability */
-  /* text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.9); */
+  inset: 0;
+  pointer-events: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 45%);
 }
 
-.timeline-item:hover .timeline-date {
-  color: #0056b3; /* Darker shade on hover */
-  transform: scale(1.05);
-  font-weight: 800; /* Extra bold on hover */
+.dark-theme .tl-card-glare {
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 45%);
 }
 
-.timeline-content {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  border-left: 3px solid var(--accent-color);
+/* Card content */
+.tl-year {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  margin-bottom: 10px;
 }
 
-.dark-theme .timeline-content {
-  background-color: #2a2a35;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+.light-theme .tl-year {
+  background: rgba(0,123,255,0.08);
+  color: var(--accent);
+  border: 1px solid rgba(0,123,255,0.12);
 }
 
-.timeline-content:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  transform: translateY(-5px);
+.dark-theme .tl-year {
+  background: rgba(130,177,255,0.08);
+  color: #82b1ff;
+  border: 1px solid rgba(130,177,255,0.1);
 }
 
-.dark-theme .timeline-content:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+.tl-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 4px;
 }
 
-.timeline-content h4 {
-  margin: 0 0 8px;
-  color: #333;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
+.light-theme .tl-card-title { color: #1a1a2e; }
+.dark-theme .tl-card-title { color: #e8e8f0; }
 
-.timeline-content h5 {
-  margin: 0 0 15px;
-  color: var(--accent-color);
-  font-size: 1rem;
+.tl-card-org {
+  font-size: 0.88rem;
   font-weight: 500;
-  opacity: 0.9;
+  margin: 0 0 10px;
+  color: var(--accent);
 }
 
-.timeline-content p {
+.tl-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
   margin: 0;
-  color: #666;
-  line-height: 1.6;
 }
 
-.dark-theme .timeline-content h4 {
-  color: #f8f9fa;
-}
+.light-theme .tl-card-desc { color: #5a5a70; }
+.dark-theme .tl-card-desc { color: #9898ae; }
 
-.dark-theme .timeline-content p {
-  color: #aaa;
-}
-
-@keyframes pulseTimeline {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); /* Increased opacity for more vibrance */
-    background-color: #007bff; /* Blue */
-  }
-  33% {
-    box-shadow: 0 0 0 5px rgba(23, 162, 184, 0.5); /* Teal */
-    background-color: #17a2b8;
-  }
-  66% {
-    box-shadow: 0 0 0 8px rgba(40, 167, 69, 0.3); /* Green */
-    background-color: #28a745;
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-    background-color: var(--accent-color);
-  }
-}
-
-.timeline-item:hover .timeline-dot {
-  animation: pulseTimeline 2s infinite;
-  /* Increase z-index but keep below date (z-index: 3) */
-  z-index: 2;
-}
-
+/* ── Responsive ── */
 @media (max-width: 768px) {
-  .timeline-container::before {
-    left: 30px;
-  }
-  
-  .timeline-item {
-    padding-left: 65px; /* Slightly increased to accommodate the dot and date */
-  }
-  
-  .timeline-dot {
-    left: 21px;
-  }
-  
-  .timeline-date {
-    left: -15px; /* Moved further left on mobile */
-    width: 65px;
-    padding-right: 25px;
-    font-size: 0.95rem;
-    font-weight: 700; /* Bolder text for better readability */
-    background-color: rgba(255, 255, 255, 0.85); /* Stronger background for better contrast */
-    border-radius: 3px; /* Rounded corners for the background */
-    padding-top: 2px;
-    padding-bottom: 2px;
-  }
-  
-  .dark-theme .timeline-date {
-    background-color: rgba(42, 42, 53, 0.85);
-  }
-  
-  .timeline-content h4 {
-    font-size: 1.2rem;
-  }
+  .tl-glass-panel { padding: 36px 24px; }
+  .tl-heading { font-size: 1.8rem; }
+  .tl-track { padding-left: 32px; }
+  .tl-marker { left: -25px; }
 }
 
 @media (max-width: 480px) {
-  .timeline-container {
-    padding: 0 10px;
-  }
-  
-  .timeline-content {
-    padding: 15px;
-  }
-  
-  .timeline-content h4 {
-    font-size: 1.1rem;
-  }
-  
-  .timeline-content h5 {
-    font-size: 0.9rem;
-  }
-  
-  .timeline-content p {
-    font-size: 0.9rem;
-  }
+  .tl-glass-panel { padding: 28px 16px; border-radius: 22px; }
+  .tl-heading { font-size: 1.5rem; }
+  .tl-card { padding: 18px; }
+  .tl-card-title { font-size: 1.05rem; }
+  .tl-track { padding-left: 28px; }
+  .tl-line { left: 11px; }
+  .tl-marker { left: -21px; }
+  .tl-orb-1 { width: 180px; height: 180px; }
 }

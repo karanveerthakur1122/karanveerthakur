@@ -1,217 +1,164 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  FaBriefcase, FaLaptopCode, FaChalkboardTeacher,
+  FaPaperPlane, FaCheckCircle, FaArrowRight
+} from 'react-icons/fa';
 import '../css/HireMe.css';
 
-const HireMe = () => {  // Set initial state for the form
-  const [projectType, setProjectType] = useState('internship');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    duration: '',
-    startDate: '',
-    description: ''
+const types = [
+  { key: 'internship', icon: <FaBriefcase />, title: 'Internship', desc: 'For companies looking to hire interns in software development' },
+  { key: 'project', icon: <FaLaptopCode />, title: 'Project Collab', desc: 'College or open-source project partnerships' },
+  { key: 'mentorship', icon: <FaChalkboardTeacher />, title: 'Mentorship', desc: 'Learning guidance and code reviews for fellow students' },
+];
+
+const steps = [
+  { num: 1, title: 'Connect', desc: 'We discuss your opportunity, project scope, or mentorship needs.' },
+  { num: 2, title: 'Plan', desc: 'We agree on objectives, timeline, and communication frequency.' },
+  { num: 3, title: 'Build', desc: 'I apply my technical skills and deliver with regular updates.' },
+  { num: 4, title: 'Grow', desc: 'Documentation, feedback, and continuous improvement.' },
+];
+
+const HireMe = () => {
+  const [activeType, setActiveType] = useState('internship');
+  const [form, setForm] = useState({
+    name: '', email: '', company: '', duration: '', startDate: '', description: ''
   });
+  const [sent, setSent] = useState(false);
 
-  const [formStatus, setFormStatus] = useState({
-    message: '',
-    isSuccess: false,
-    isSubmitted: false
-  });
-
-  const handleTypeChange = (type) => {
-    setProjectType(type);
-  };
-
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    // In a real application, you would handle form submission to a backend service here
-      // Simulate form submission success for demonstration
-    setFormStatus({
-      message: 'Thank you for your opportunity! I will review and get back to you as soon as possible.',
-      isSuccess: true,
-      isSubmitted: true
-    });
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      duration: '',
-      startDate: '',
-      description: ''
-    });
-  };
+    setSent(true);
+    setForm({ name: '', email: '', company: '', duration: '', startDate: '', description: '' });
+    setTimeout(() => setSent(false), 4000);
+  }, []);
 
-  return (    <div className="hire-me-container">      <div className="hire-me-header" data-aos="fade-down" data-aos-duration="800">
-        <h2 className="section-title">Work With Me</h2>
-        <p className="section-description">
-          Let's collaborate on tech projects or discuss internship opportunities
-        </p>
-      </div>
-      
-      <div className="project-types" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">        <div 
-          className={`project-type ${projectType === 'internship' ? 'active' : ''}`}
-          onClick={() => handleTypeChange('internship')}
-          data-aos="zoom-in" data-aos-delay="100"
-        >
-          <h3>Internship Opportunity</h3>
-          <p>For companies looking to hire interns in software development</p>
-        </div>          <div 
-          className={`project-type ${projectType === 'project' ? 'active' : ''}`}
-          onClick={() => handleTypeChange('project')}
-          data-aos="zoom-in" data-aos-delay="300"
-        >
-          <h3>Project Collaboration</h3>
-          <p>College or open-source project partnerships</p>
+  return (
+    <div className="hm-page">
+      {/* ── Hero ── */}
+      <section className="hm-hero">
+        <div className="hm-hero-orb hm-orb-1" />
+        <div className="hm-hero-orb hm-orb-2" />
+
+        <div className="hm-hero-panel">
+          <div className="hm-panel-shine" />
+          <div className="hm-panel-edge" />
+          <div className="hm-hero-content">
+            <span className="hm-tag">OPPORTUNITIES</span>
+            <h1 className="hm-title">Work With Me</h1>
+            <p className="hm-subtitle">
+              Let's collaborate on tech projects or discuss internship opportunities.
+            </p>
+          </div>
         </div>
-          <div 
-          className={`project-type ${projectType === 'mentorship' ? 'active' : ''}`}
-          onClick={() => handleTypeChange('mentorship')}
-          data-aos="zoom-in" data-aos-delay="500"
-        >
-          <h3>Technical Mentorship</h3>
-          <p>Learning guidance and code reviews for fellow students</p>
+      </section>
+
+      {/* ── Type Selector ── */}
+      <section className="hm-types-section">
+        <div className="hm-types">
+          {types.map((t) => (
+            <button
+              key={t.key}
+              className={`hm-type-card ${activeType === t.key ? 'active' : ''}`}
+              onClick={() => setActiveType(t.key)}
+            >
+              <div className="hm-type-icon">{t.icon}</div>
+              <h3 className="hm-type-title">{t.title}</h3>
+              <p className="hm-type-desc">{t.desc}</p>
+            </button>
+          ))}
         </div>
-      </div>
-      
-      <div className="hire-me-content">
-        <div className="process-section">          <h3 className="process-title">How It Works</h3>
-          <div className="process-steps">
-            <div className="process-step">
-              <div className="step-number">1</div>
-              <h4>Initial Connection</h4>
-              <p>We'll discuss your opportunity, project scope, or mentorship needs.</p>
+      </section>
+
+      {/* ── Main Content ── */}
+      <section className="hm-body">
+        <div className="hm-layout">
+          {/* Left: Process */}
+          <div className="hm-process-col">
+            <div className="hm-process-card">
+              <h2 className="hm-section-heading">How It Works</h2>
+              <div className="hm-steps">
+                {steps.map((s, i) => (
+                  <div className="hm-step" key={s.num}>
+                    <div className="hm-step-num">{s.num}</div>
+                    <div className="hm-step-body">
+                      <h3 className="hm-step-title">{s.title}</h3>
+                      <p className="hm-step-desc">{s.desc}</p>
+                    </div>
+                    {i < steps.length - 1 && <div className="hm-step-connector" />}
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <div className="process-step">
-              <div className="step-number">2</div>
-              <h4>Planning & Schedule</h4>
-              <p>We'll agree on objectives, timeline, and communication frequency.</p>
-            </div>
-            
-            <div className="process-step">
-              <div className="step-number">3</div>
-              <h4>Execution</h4>
-              <p>I'll apply my technical skills and programming knowledge to meet our goals.</p>
-            </div>
-            
-            <div className="process-step">
-              <div className="step-number">4</div>              <div className="step-number">4</div>
-              <h4>Growth & Feedback</h4>
-              <p>I'll provide documentation, collect feedback, and implement continuous improvements.</p>
+          </div>
+
+          {/* Right: Form */}
+          <div className="hm-form-col">
+            <div className="hm-form-card">
+              <h2 className="hm-section-heading">Submit an Opportunity</h2>
+
+              {sent && (
+                <div className="hm-success">
+                  <FaCheckCircle /> Thank you! I'll review and get back to you soon.
+                </div>
+              )}
+
+              <form className="hm-form" onSubmit={handleSubmit}>
+                <div className="hm-field-row">
+                  <div className="hm-field">
+                    <label htmlFor="hm-name">Name</label>
+                    <input id="hm-name" type="text" name="name" value={form.name} onChange={handleChange} required placeholder="Your name" autoComplete="name" />
+                  </div>
+                  <div className="hm-field">
+                    <label htmlFor="hm-email">Email</label>
+                    <input id="hm-email" type="email" name="email" value={form.email} onChange={handleChange} required placeholder="you@example.com" autoComplete="email" />
+                  </div>
+                </div>
+
+                <div className="hm-field-row">
+                  <div className="hm-field">
+                    <label htmlFor="hm-company">Organization</label>
+                    <input id="hm-company" type="text" name="company" value={form.company} onChange={handleChange} placeholder="Company or university" />
+                  </div>
+                  <div className="hm-field">
+                    <label htmlFor="hm-duration">Duration</label>
+                    <select id="hm-duration" name="duration" value={form.duration} onChange={handleChange} required>
+                      <option value="">Select duration</option>
+                      <option value="1-2 months">1-2 months</option>
+                      <option value="3-6 months">3-6 months</option>
+                      <option value="6+ months">6+ months</option>
+                      <option value="Flexible">Flexible</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="hm-field">
+                  <label htmlFor="hm-start">Start Date</label>
+                  <input id="hm-start" type="date" name="startDate" value={form.startDate} onChange={handleChange} required />
+                </div>
+
+                <div className="hm-field">
+                  <label htmlFor="hm-desc">Details</label>
+                  <textarea id="hm-desc" name="description" value={form.description} onChange={handleChange} required placeholder="Describe the opportunity, project, or mentorship needs..." rows="5" />
+                </div>
+
+                <button type="submit" className="hm-submit-btn">
+                  <FaPaperPlane /> Submit Request
+                </button>
+              </form>
+
+              <p className="hm-cta-text">
+                Prefer to chat first? <Link to="/contact" className="hm-cta-link">Contact me <FaArrowRight size={11} /></Link>
+              </p>
             </div>
           </div>
         </div>
-        
-        <div className="hire-form-container">
-          <h3 className="form-title">Submit an Opportunity</h3>
-          
-          {formStatus.isSubmitted && (
-            <div className={`form-message ${formStatus.isSuccess ? 'success' : 'error'}`}>
-              {formStatus.message}
-            </div>
-          )}
-          
-          <form className="hire-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Your Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your name"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">Your Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your email"
-                />
-              </div>
-            </div>
-            
-            <div className="form-row">              <div className="form-group">
-                <label htmlFor="company">Organization/Company</label>
-                <input
-                  type="text"
-                  id="company"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  placeholder="Enter your organization or company name"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="duration">Duration</label>
-                <select
-                  id="duration"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Duration</option>
-                  <option value="1-2 months">1-2 months</option>
-                  <option value="3-6 months">3-6 months</option>
-                  <option value="6+ months">6+ months</option>
-                  <option value="Flexible">Flexible</option>
-                </select>
-              </div>
-            </div>
-              <div className="form-group">
-              <label htmlFor="startDate">Desired Start Date</label>
-              <input
-                type="date"
-                id="startDate"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            
-            <div className="form-group">              <label htmlFor="description">Opportunity Details</label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-                placeholder="Describe the opportunity, project, or mentorship needs in detail"
-                rows="5"
-              ></textarea>
-            </div>
-            
-            <button type="submit" className="btn-submit">Submit Request</button>
-          </form>
-          
-          <p className="hire-cta">
-            Want to discuss first? <Link to="/contact">Contact me</Link> directly.
-          </p>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };

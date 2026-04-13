@@ -1,289 +1,422 @@
-/* Header.css */
+/* ============================================
+   LIQUID GLASS DOCK BAR
+   Ultra-smooth GPU-accelerated dock
+   Direct DOM + rAF interpolation, zero re-renders
+   ============================================ */
 
-.header {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  padding: 15px 0;
-  z-index: 100;
-  transition: all 0.3s ease;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.theme-toggle {
+.liquid-glass-svg {
   position: absolute;
-  left: 20px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
 }
 
-.theme-btn {
-  background: transparent;
-  border: none;
+/* ── Dock Container ── */
+.dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 10px 14px 8px;
+  border-radius: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    background 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s ease;
+}
+
+/* ── Light Glass ── */
+.dock.light-mode {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.35) 40%,
+      rgba(245, 248, 255, 0.4) 100%
+    );
+  backdrop-filter: blur(24px) saturate(190%) brightness(1.06);
+  -webkit-backdrop-filter: blur(24px) saturate(190%) brightness(1.06);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.6) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.02) inset,
+    0 8px 40px -8px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Dark Glass ── */
+.dock.dark-mode {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(40, 40, 55, 0.55) 0%,
+      rgba(28, 28, 40, 0.45) 40%,
+      rgba(35, 32, 50, 0.5) 100%
+    );
+  backdrop-filter: blur(24px) saturate(170%) brightness(0.82);
+  -webkit-backdrop-filter: blur(24px) saturate(170%) brightness(0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.1) inset,
+    0 8px 40px -8px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Refraction ── */
+.dock-refract {
+  position: absolute;
+  inset: 0;
+  filter: url(#liquid-refract);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.dark-mode .dock-refract {
+  opacity: 0.07;
+}
+
+/* ── Specular (mouse-tracked via inline CSS vars) ── */
+.dock-specular {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 220px 90px at var(--sx, 50%) var(--sy, 50%),
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+.dark-mode .dock-specular {
+  background: radial-gradient(
+    ellipse 220px 90px at var(--sx, 50%) var(--sy, 50%),
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    transparent 75%
+  );
+}
+
+/* ── Edge Lights ── */
+.dock-edge-top {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 30%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.55) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dark-mode .dock-edge-top {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.1) 70%,
+    transparent 100%
+  );
+}
+
+.dock-edge-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.2) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dark-mode .dock-edge-bottom {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 70%,
+    transparent 100%
+  );
+}
+
+/* ── Dock Items ── */
+.dock-items {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+/* ── Dock Item (icon + label stacked) ── */
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  text-decoration: none;
+  position: relative;
   cursor: pointer;
-  font-size: 20px;
+  border: none;
+  background: none;
+  padding: 0 4px;
+  flex-shrink: 0;
+  gap: 3px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dock-item::after {
+  display: none !important;
+}
+
+/* ── Icon Tile (GPU-accelerated scale) ── */
+.dock-icon-bg {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.nav-menu {
-  display: flex;
-  align-items: center;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  align-items: center;
-}
-
-.nav-links li {
-  margin: 0 15px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  font-weight: 500;
   position: relative;
-  padding: 5px 0;
-  transition: 0.3s;
+  flex-shrink: 0;
+  will-change: transform;
+  transform: scale(1);
+  transform-origin: bottom center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  transition: width 0.3s ease;
+.light-mode .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(240, 245, 255, 0.35) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.03) inset,
+    0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
-.nav-links a:hover::after {
-  width: 100%;
+.dark-mode .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(60, 60, 80, 0.5) 0%,
+      rgba(40, 40, 55, 0.35) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+    0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.btn-hire {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 30px;
+.light-mode .dock-item:hover .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.78) 0%,
+      rgba(230, 240, 255, 0.52) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.04) inset,
+    0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .dock-item:hover .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(75, 75, 100, 0.65) 0%,
+      rgba(50, 50, 70, 0.48) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.09) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.12) inset,
+    0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Active ── */
+.light-mode .dock-item.active .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(0, 123, 255, 0.15) 0%,
+      rgba(0, 123, 255, 0.06) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 2px 10px rgba(0, 123, 255, 0.15);
+}
+
+.dark-mode .dock-item.active .dock-icon-bg {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(130, 177, 255, 0.18) 0%,
+      rgba(130, 177, 255, 0.06) 100%
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 2px 10px rgba(130, 177, 255, 0.18);
+}
+
+/* ── Icon ── */
+.dock-icon {
+  font-size: 18px;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.light-mode .dock-icon { color: #4a4a5a; }
+.dark-mode .dock-icon { color: #c0c0d0; }
+
+.light-mode .dock-item:hover .dock-icon,
+.light-mode .dock-item.active .dock-icon { color: #007bff; }
+
+.dark-mode .dock-item:hover .dock-icon,
+.dark-mode .dock-item.active .dock-icon { color: #82b1ff; }
+
+.theme-sun { color: #f5a623 !important; }
+.theme-moon { color: #6c7a99 !important; }
+.dark-mode .theme-moon { color: #a0b0d0 !important; }
+
+/* ── Label Below Icon ── */
+.dock-label {
+  font-size: 0.6rem;
   font-weight: 600;
-  transition: 0.3s ease;
-  text-decoration: none;
-  background-color: transparent;
-  color: #007bff;
-  
+  letter-spacing: 0.2px;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+  transition: color 0.2s ease;
+  user-select: none;
+  pointer-events: none;
 }
 
-.mobile-menu-btn {
-  display: none;
-  cursor: pointer;
-}
+.light-mode .dock-label { color: #5a5a6a; }
+.dark-mode .dock-label { color: #9a9ab0; }
 
-.menu-icon {
-  width: 30px;
-  height: 20px;
-  position: relative;
-}
+.light-mode .dock-item:hover .dock-label,
+.light-mode .dock-item.active .dock-label { color: #007bff; }
 
-.menu-icon span {
-  display: block;
+.dark-mode .dock-item:hover .dock-label,
+.dark-mode .dock-item.active .dock-label { color: #82b1ff; }
+
+/* ── Indicator Dot ── */
+.dock-indicator {
   position: absolute;
-  height: 3px;
-  width: 100%;
-  border-radius: 3px;
-  opacity: 1;
-  left: 0;
-  transform: rotate(0deg);
-  transition: .25s ease-in-out;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
 }
 
-.menu-icon span:nth-child(1) {
-  top: 0px;
+.light-mode .dock-indicator {
+  background: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
 
-.menu-icon span:nth-child(2) {
-  top: 8px;
+.dark-mode .dock-indicator {
+  background: #82b1ff;
+  box-shadow: 0 0 6px rgba(130, 177, 255, 0.4);
 }
 
-.menu-icon span:nth-child(3) {
-  top: 16px;
+/* ── Divider ── */
+.dock-divider {
+  width: 1px;
+  height: 36px;
+  margin: 0 6px;
+  align-self: center;
+  border-radius: 1px;
+  flex-shrink: 0;
 }
 
-.menu-icon.open span:nth-child(1) {
-  top: 8px;
-  transform: rotate(135deg);
+.light-mode .dock-divider {
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.12) 50%, transparent 100%);
 }
 
-.menu-icon.open span:nth-child(2) {
-  opacity: 0;
-  left: -60px;
+.dark-mode .dock-divider {
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
 }
 
-.menu-icon.open span:nth-child(3) {
-  top: 8px;
-  transform: rotate(-135deg);
+/* ── Theme btn ── */
+.dock-theme-btn {
+  font-size: inherit;
+  font-family: inherit;
 }
 
-/* Light Mode Styles */
-.light-mode {
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 
-.light-mode .logo {
-  color: #333333;
-}
-
-.light-mode .theme-btn {
-  color: #333333;
-}
-
-.light-mode .theme-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.light-mode .nav-links a {
-  color: #333333;
-}
-
-.light-mode .nav-links a::after {
-  background-color: #333333;
-}
-
-.light-mode .btn-hire {
-  background-color: transparent;
-  color: #007bff;
-  border-color: #007bff;
-}
-
-.light-mode .btn-hire:hover {
-  background-color: rgba(0, 123, 255, 0.1);
-  color: #007bff;
-  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
-}
-
-.light-mode .menu-icon span {
-  background-color: #333333;
-}
-
-/* Dark Mode Styles */
-.dark-mode {
-  background-color: #121212;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .logo {
-  color: #ffffff;
-}
-
-.dark-mode .theme-btn {
-  color: #ffffff;
-}
-
-.dark-mode .theme-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.dark-mode .nav-links a {
-  color: #ffffff;
-}
-
-.dark-mode .nav-links a::after {
-  background-color: #ffffff;
-}
-
-.dark-mode .btn-hire {
-  background-color: transparent;
-  color: #ffffff;
-  border-color: #ffffff;
-}
-
-.dark-mode .btn-hire:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-}
-
-.dark-mode .menu-icon span {
-  background-color: #ffffff;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-  .theme-toggle {
-    position: relative;
-    left: 0;
-    margin-right: 15px;
+@media screen and (max-width: 640px) {
+  .dock {
+    bottom: 10px;
+    padding: 8px 8px 6px;
+    border-radius: 18px;
   }
 
-  .nav-menu {
-    position: fixed;
-    top: 70px;
-    right: -100%;
-    width: 70%;
-    height: calc(100vh - 70px);
-    flex-direction: column;
-    transition: 0.3s ease-in-out;
+  .dock-items { gap: 1px; }
+  .dock-item { padding: 0 3px; }
+  .dock-icon-bg { width: 40px; height: 40px; border-radius: 12px; }
+  .dock-icon { font-size: 16px; }
+  .dock-label { font-size: 0.52rem; }
+  .dock-divider { height: 28px; margin: 0 4px; }
+}
+
+@media screen and (max-width: 400px) {
+  .dock {
+    bottom: 8px;
+    padding: 6px 5px 5px;
+    border-radius: 16px;
+    max-width: calc(100vw - 16px);
   }
 
-  .nav-menu.active {
-    right: 0;
-  }
+  .dock-item { padding: 0 2px; }
+  .dock-icon-bg { width: 36px; height: 36px; border-radius: 10px; }
+  .dock-icon { font-size: 14px; }
+  .dock-label { font-size: 0.48rem; }
+}
 
-  .light-mode .nav-menu {
-    background-color: #ffffff;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark-mode .nav-menu {
-    background-color: #1e1e1e;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .nav-links {
-    flex-direction: column;
-    width: 100%;
-    padding: 20px 0;
-  }
-
-  .nav-links li {
-    margin: 15px 0;
-    width: 100%;
-    text-align: center;
-  }
-
-  .hire-me-btn {
-    margin-top: 20px;
-  }
-
-  .mobile-menu-btn {
-    display: block;
-  }
+/* ── Fallback ── */
+@supports not (backdrop-filter: blur(1px)) {
+  .dock.light-mode { background: rgba(255, 255, 255, 0.92); }
+  .dock.dark-mode { background: rgba(24, 24, 32, 0.95); }
 }
