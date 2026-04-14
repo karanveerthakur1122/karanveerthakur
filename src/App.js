@@ -64,7 +64,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/karanveerthakur">
       <ScrollToTop />
       <AnimatedRoutes isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
     </Router>
