@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://karanveerthakur1122.github.io/karanveerthakur",
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@supabase/supabase-js": "^2.103.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -16,7 +18,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env PUBLIC_URL=/ react-scripts start",
     "build": "react-scripts build",
     "build:cpanel": "cross-env PUBLIC_URL=/ react-scripts build",
     "test": "react-scripts test",

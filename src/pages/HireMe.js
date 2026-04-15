@@ -2,8 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaBriefcase, FaLaptopCode, FaChalkboardTeacher,
-  FaPaperPlane, FaCheckCircle, FaArrowRight
+  FaPaperPlane, FaCheckCircle, FaArrowRight, FaExclamationCircle
 } from 'react-icons/fa';
+import { supabase } from '../lib/supabase';
+import { sendHireEmail } from '../lib/emailService';
 import '../css/HireMe.css';
 
 const types = [
@@ -25,18 +27,50 @@ const HireMe = () => {
     name: '', email: '', company: '', duration: '', startDate: '', description: ''
   });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    setSent(true);
-    setForm({ name: '', email: '', company: '', duration: '', startDate: '', description: '' });
-    setTimeout(() => setSent(false), 4000);
-  }, []);
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error: dbError } = await supabase
+        .from('hire_requests')
+        .insert([{
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          type: activeType,
+          duration: form.duration,
+          start_date: form.startDate || null,
+          description: form.description,
+        }]);
+
+      if (dbError) throw dbError;
+
+      try {
+        await sendHireEmail({ ...form, type: activeType });
+      } catch {
+        // Email is best-effort; DB save already succeeded
+      }
+
+      setSent(true);
+      setForm({ name: '', email: '', company: '', duration: '', startDate: '', description: '' });
+      setTimeout(() => setSent(false), 4000);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setLoading(false);
+    }
+  }, [form, activeType]);
 
   return (
     <div className="hm-page">
@@ -108,6 +142,12 @@ const HireMe = () => {
                 </div>
               )}
 
+              {error && (
+                <div className="hm-error">
+                  <FaExclamationCircle /> {error}
+                </div>
+              )}
+
               <form className="hm-form" onSubmit={handleSubmit}>
                 <div className="hm-field-row">
                   <div className="hm-field">
@@ -147,8 +187,8 @@ const HireMe = () => {
                   <textarea id="hm-desc" name="description" value={form.description} onChange={handleChange} required placeholder="Describe the opportunity, project, or mentorship needs..." rows="5" />
                 </div>
 
-                <button type="submit" className="hm-submit-btn">
-                  <FaPaperPlane /> Submit Request
+                <button type="submit" className="hm-submit-btn" disabled={loading}>
+                  <FaPaperPlane /> {loading ? 'Submitting...' : 'Submit Request'}
                 </button>
               </form>
 

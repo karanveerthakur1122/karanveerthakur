@@ -2,8 +2,10 @@ import React, { useState, useCallback } from 'react';
 import {
   FaMapMarkerAlt, FaPhoneAlt, FaEnvelope,
   FaLinkedin, FaGithub, FaTwitter,
-  FaPaperPlane, FaCheckCircle
+  FaPaperPlane, FaCheckCircle, FaExclamationCircle
 } from 'react-icons/fa';
+import { supabase } from '../lib/supabase';
+import { sendContactEmail } from '../lib/emailService';
 import '../css/Contact.css';
 
 const contactInfo = [
@@ -21,18 +23,47 @@ const socials = [
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    setSent(true);
-    setForm({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSent(false), 4000);
-  }, []);
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error: dbError } = await supabase
+        .from('contact_messages')
+        .insert([{
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+        }]);
+
+      if (dbError) throw dbError;
+
+      try {
+        await sendContactEmail(form);
+      } catch {
+        // Email is best-effort; DB save already succeeded
+      }
+
+      setSent(true);
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 4000);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setLoading(false);
+    }
+  }, [form]);
 
   return (
     <div className="ct-page">
@@ -110,6 +141,12 @@ const Contact = () => {
                 </div>
               )}
 
+              {error && (
+                <div className="ct-error">
+                  <FaExclamationCircle /> {error}
+                </div>
+              )}
+
               <form className="ct-form" onSubmit={handleSubmit}>
                 <div className="ct-field-row">
                   <div className="ct-field">
@@ -166,8 +203,8 @@ const Contact = () => {
                   />
                 </div>
 
-                <button type="submit" className="ct-submit-btn">
-                  <FaPaperPlane /> Send Message
+                <button type="submit" className="ct-submit-btn" disabled={loading}>
+                  <FaPaperPlane /> {loading ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>

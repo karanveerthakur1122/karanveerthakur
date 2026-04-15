@@ -545,6 +545,30 @@
   border: 1px solid rgba(34,197,94,0.12);
 }
 
+.hm-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+  animation: hmFadeIn 0.3s ease;
+}
+
+.light-theme .hm-error {
+  background: rgba(239,68,68,0.08);
+  color: #dc2626;
+  border: 1px solid rgba(239,68,68,0.15);
+}
+
+.dark-theme .hm-error {
+  background: rgba(239,68,68,0.1);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.12);
+}
+
 @keyframes hmFadeIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './component/Header';
 import Footer from './component/Footer';
 import ScrollToTop from './component/ScrollToTop';
@@ -28,6 +28,7 @@ function AnimatedRoutes({ isDarkMode, toggleTheme }) {
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/hire-me" element={<HireMe />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </main>
@@ -64,7 +65,7 @@ function App() {
   };
 
   return (
-    <Router basename="/karanveerthakur">
+    <Router basename={process.env.PUBLIC_URL || ''}>
       <ScrollToTop />
       <AnimatedRoutes isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
     </Router>
